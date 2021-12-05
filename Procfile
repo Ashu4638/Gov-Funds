@@ -1,0 +1,1 @@
+web: gunicorn Blockchain.wsgi --log-file -
