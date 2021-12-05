@@ -22,7 +22,7 @@ from django.views.static import serve
 from Chain import  views
 
 urlpatterns = [
-    path('', views.index, name='Home'),
+    path('/', views.index, name='Home'),
     path('transaction', views.createTransaction, name="Transaction"),
     path('about', views.about, name="About"),
     path('contact', views.contact, name="Contact"),
