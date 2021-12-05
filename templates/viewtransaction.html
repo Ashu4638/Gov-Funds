@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock title %}
+{% block body %}
+<center><h1>Block Transactions</h1></center>
+
+<form method="post" action="#">
+    {% csrf_token %}
+    <input type="checkbox" id="block" name="block" value="{{name}}" checked hidden  />
+    {% for transaction in transactions %}
+<div class="card">
+  <div class="card-header">
+    {{name}}
+
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">From User -> {{transaction.fromAdd}}</h5>
+    <h5 class="card-title">To User -> {{transaction.toAdd}}</h5>
+    <h5 class="card-title">Amount -> {{transaction.amount}}</h5>
+    <a href="#" class="btn btn-primary">View Transactions</a>
+  </div>
+</div>
+
+<!--<h3>Block</h3>-->
+<!--<h4>{{block.prev}}</h4>-->
+<!--<h4>{{bloc.nonce}}</h4>-->
+<!--<h4>{{block.timestamp}}</h4>-->
+<!--<h4>{{block.hash}}</h4>-->
+<!--{% for tran in block.transactions %}-->
+<!--{{tran.fromAdd}}-->
+<!--{{tran.toAdd}}-->
+<!--{{tran.amount}}-->
+<!--{% endfor %}-->
+
+{% endfor %}
+
+</form>
+{% endblock body%}

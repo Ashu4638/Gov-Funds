@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock title %}
+{% block body %}
+<center><h1>Allocated Funds</h1></center>
+{% for fund in funds %}
+
+<form method="post" action="mine">
+    {% csrf_token %}
+<div class="card">
+  <div class="card-header" >
+      {{fund.name}}
+  </div>
+  <div class="card-body">
+      <input class="card-title" type="checkbox" id="block" name = "block" value = "{{fund.name}}" checked hidden>
+    <h5 class="card-title">Amount -> {{fund.fund}}</h5>
+    <button type="submit" class="btn btn-primary">View Pending Transactions</button>
+  </div>
+</div>
+</form>
+<!--<h3>Block</h3>-->
+<!--<h4>{{block.prev}}</h4>-->
+<!--<h4>{{bloc.nonce}}</h4>-->
+<!--<h4>{{block.timestamp}}</h4>-->
+<!--<h4>{{block.hash}}</h4>-->
+<!--{% for tran in block.transactions %}-->
+<!--{{tran.fromAdd}}-->
+<!--{{tran.toAdd}}-->
+<!--{{tran.amount}}-->
+<!--{% endfor %}-->
+
+{% endfor %}
+ <form method="post" action="mine">
+          {% csrf_token %}
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <center><button type="submit" class="btn btn-primary btn-lg"
+              style="padding-left: 2.5rem; padding-right: 2.5rem;">Mine Block</button></center>
+          </div>
+        </form>
+
+{% endblock body%}

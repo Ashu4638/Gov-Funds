@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock title %}
+{% block body %}
+<center><h1>Pending Transactions</h1></center>
+
+<form method="post" action="addblock">
+    {% csrf_token %}
+    <input type="checkbox" id="block" name="block" value="{{name}}" checked hidden  />
+    {% for transaction in transactions %}
+<div class="card">
+  <div class="card-header">
+    {{name}}
+
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">From User -> {{transaction.fromAdd}}</h5>
+    <h5 class="card-title">To User -> {{transaction.toAdd}}</h5>
+    <h5 class="card-title">Amount -> {{transaction.amount}}</h5>
+    <a href="#" class="btn btn-primary">Delete Transaction</a>
+  </div>
+</div>
+
+<!--<h3>Block</h3>-->
+<!--<h4>{{block.prev}}</h4>-->
+<!--<h4>{{bloc.nonce}}</h4>-->
+<!--<h4>{{block.timestamp}}</h4>-->
+<!--<h4>{{block.hash}}</h4>-->
+<!--{% for tran in block.transactions %}-->
+<!--{{tran.fromAdd}}-->
+<!--{{tran.toAdd}}-->
+<!--{{tran.amount}}-->
+<!--{% endfor %}-->
+
+{% endfor %}
+
+
+
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <center><button type="submit" class="btn btn-primary btn-lg"
+              style="padding-left: 2.5rem; padding-right: 2.5rem;">Mine Block</button></center>
+          </div>
+</form>
+{% endblock body%}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock title %}
+{% block body %}
+<form method="post" action="viewblockchain">
+  {% csrf_token %}
+{% for fund in funds %}
+<div class="card">
+  <div class="card-header">
+    {{fund.name}}
+  </div>
+  <div class="card-body">
+    <input type="checkbox" id="block" name="block" value="{{fund.name}}" checked hidden  />
+    <h5 class="card-title">Name -> {{fund.name}}</h5>
+    <h5 class="card-title">Available Fund -> {{fund.fund}}</h5>
+    <p class="card-text">Click on View Transactions to check all transactions within a Block.</p>
+    <button type="submit" class="btn btn-primary">View Blockchain</button>
+  </div>
+
+</form>
+<!--<h3>Block</h3>-->
+<!--<h4>{{block.prev}}</h4>-->
+<!--<h4>{{bloc.nonce}}</h4>-->
+<!--<h4>{{block.timestamp}}</h4>-->
+<!--<h4>{{block.hash}}</h4>-->
+<!--{% for tran in block.transactions %}-->
+<!--{{tran.fromAdd}}-->
+<!--{{tran.toAdd}}-->
+<!--{{tran.amount}}-->
+<!--{% endfor %}-->
+
+
+{% endfor %}
+
+{% endblock body%}
