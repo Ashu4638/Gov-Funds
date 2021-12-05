@@ -1,1 +1,1 @@
-web: gunicorn wsgi:Blockchain --log-file -
+web: gunicorn Blockchain.wsgi --log-file -
