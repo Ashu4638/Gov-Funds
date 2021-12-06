@@ -9,11 +9,11 @@ from . import transaction
 from .Block import Block
 
 fund = blockchain.Blockchain(10000, "Scholarship")
-fund.createTransaction(transaction.Transaction("Address1", "Address2", 100))
-fund.createTransaction(transaction.Transaction("Address2", "Address1", 50))
-fund.minependingTransacrions()
-fund.createTransaction(transaction.Transaction("Address1", "Address2", 100))
-fund.createTransaction(transaction.Transaction("Address2", "Address1", 50))
+# fund.createTransaction(transaction.Transaction("Address1", "Address2", 100))
+# fund.createTransaction(transaction.Transaction("Address2", "Address1", 50))
+# fund.minependingTransacrions()
+# fund.createTransaction(transaction.Transaction("Address1", "Address2", 100))
+# fund.createTransaction(transaction.Transaction("Address2", "Address1", 50))
 data = {"funds" : [fund]}
 
 
@@ -47,9 +47,10 @@ def createTransaction(request):
             print(fromAdd)
             print(toAdd)
             fund = data["funds"][0]
-            for fund in data["funds"]:
-                if fund.name == fromAdd:
-                    fund.createTransaction(transaction.Transaction(fromAdd, toAdd, amount))
+            for ptr in range (0,len(data["funds"])):
+                if data["funds"][ptr].name == fromAdd:
+                    data["funds"][ptr].createTransaction(transaction.Transaction(fromAdd, toAdd, amount))
+                    break
             return render(request,'transaction.html', data)
         else:
             return HttpResponse("404 - Not Allowed")
@@ -64,10 +65,10 @@ def Mine(request):
         if request.method == 'POST':
             name = request.POST.get('block')
             print(name)
-            for fund in data["funds"]:
-                print(fund)
-                if fund.name == name:
-                    chain = fund
+            for ptr in range (0,len(data["funds"])):
+                print(data["funds"])
+                if data["funds"][ptr].name == name:
+                    chain = data["funds"][ptr]
                     break
             print(chain.pendingtransactions)
         if len(chain.pendingtransactions) == 0:
@@ -86,34 +87,37 @@ def addblock(request):
             print("print")
             print(name)
             fund = data["funds"][0]
-            for fund in data["funds"]:
-                if fund.name == name:
-                    fund.minependingTransacrions()
-            return render(request, 'blockchain.html', {"funds" : fund.chain} )
+            for ptr in range (0,len(data["funds"])):
+                if data["funds"][ptr].name == name:
+                    data["funds"][ptr].minependingTransacrions()
+                    return render(request, 'blockchain.html', {"funds": data["funds"][ptr].chain, "name": data["funds"][ptr].name})
+        return HttpResponse("failed")
     else:
         return render(request, 'login.html')
 def viewblockchain(request):
     if request.method == 'POST':
         name = request.POST.get('block')
         fund = data["funds"][0]
-        for fund in data["funds"]:
-            if fund.name == name:
-                return render(request, 'blockchain.html', {"funds": fund.chain, "name" : fund.name})
+        for ptr in range (0,len(data["funds"])):
+            if data["funds"][ptr].name == name:
+                return render(request, 'blockchain.html', {"funds": data["funds"][ptr].chain, "name" : data["funds"][ptr].name})
+    return HttpResponse("Failed")
 def viewtransaction(request):
     block = Block(timestamp="", transactions=[], prev="")
     if request.method == 'POST':
         name = request.POST.get('fund')
         hash = request.POST.get('hash')
-
-        for chain in data["funds"]:
-            if chain.name == name:
-                for i in chain.chain:
-                    print(i.hash)
-                    if i.hash == hash:
-                        block = i
-                        print(i.hash)
+        print("begin")
+        print(name)
+        print(hash)
+        for ptr in range (0,len(data["funds"])):
+            if data["funds"][ptr].name == name:
+                for i in range (0,len(data["funds"][ptr].chain)):
+                    print(data["funds"][ptr].chain[i].hash)
+                    if data["funds"][ptr].chain[i].hash == hash:
+                        return render(request, 'viewtransaction.html', {"transactions": data["funds"][ptr].chain[i].transactions})
                         break
-        return render(request, 'viewtransaction.html', {"transactions": block.transactions})
+    return HttpResponse("Failed")
 
 def addfund(request):
     if request.user.is_authenticated and request.user.username == "admin":
