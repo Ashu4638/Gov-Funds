@@ -20,7 +20,6 @@ data = {"funds" : [fund]}
 
 def index(request):
 
-
     return render(request, 'index.html', data)
 
 def admin(request):
