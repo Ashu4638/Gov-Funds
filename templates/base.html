@@ -52,7 +52,11 @@
       {% if user.is_authenticated %}
       <form class="d-flex" method="post" action="logout">
         {% csrf_token %}
+        {% if request.user.is_staff %}
         <a class="navbar-brand" href="#">Welcome {{request.user}}</a>
+        {% else %}
+        <a class="navbar-brand" href="#">Welcome {{request.user.first_name}}</a>
+        {% endif %}
         <button class="btn btn-outline-success" type="submit">Logout</button>
       </form>
       {% endif %}

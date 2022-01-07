@@ -233,12 +233,17 @@ def register(request):
 
 def singup(request):
     if request.method == 'POST':
-        name = request.POST['name']
+        fname = request.POST['fname']
+        lname = request.POST['lname']
         username = request.POST['email']
         password = request.POST['pass']
         rpass = request.POST['rpass']
-
-        myuser  = User.objects.create_user(username=username, password=password)
+        if password != rpass:
+            messages.error(request,"Password doesn't match")
+            return render(request, "register.html")
+        myuser  = User.objects.create_user(username=username, password=password, email=username)
+        myuser.first_name = fname
+        myuser.last_name = lname
         myuser.save()
         messages.success(request, "Account Created")
         return redirect("/")
