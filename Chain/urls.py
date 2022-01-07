@@ -38,6 +38,10 @@ urlpatterns = [
     path('viewtransaction', views.viewtransaction, name="viewtransaction"),
     path('addfund', views.addfund, name="addfund"),
     path('appendfund', views.appendfund, name="addfund"),
+    path('deleteTransaction', views.deleteTransaction, name="deleteTransaction"),
+    path('editfund', views.editfund, name="editfund"),
+    path('deletefund', views.deletefund, name="deletefund"),
+    path('updatefund', views.updatefund, name="updatefund"),
     # url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     # url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]

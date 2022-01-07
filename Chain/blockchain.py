@@ -5,14 +5,15 @@ from . import transaction
 
 class Blockchain:
     def __init__(self, fund, name):
+        self.fund = fund
+        self.name = name
         self.chain = [self.createGenesisBlock()]
         self.difficulty = 2
         self.pendingtransactions = []
-        self.fund = fund
-        self.name = name
+        self.validity = self.isChainValid()
 
     def createGenesisBlock(self):
-        return Block.Block(datetime.now(), [transaction.Transaction("None", "None", 0)], "0")
+        return Block.Block(datetime.now(), [transaction.Transaction(self.name, "None", 0)], "0")
 
     def getLatestBlock(self):
         return self.chain[-1].hash
@@ -25,6 +26,7 @@ class Blockchain:
         print("Block Mined !")
         self.chain.append(block)
         self.pendingtransactions = []
+        self.validity = self.isChainValid()
 
     def createTransaction(self, transaction):
         self.pendingtransactions.append(transaction)

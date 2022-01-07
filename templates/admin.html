@@ -2,7 +2,35 @@
 
 {% block title %} Manage Funds {% endblock title %}
 {% block body %}
-<center><h1>Allocated Funds</h1></center>
+
+<div class="row">
+    <div class="col-sm" >
+            <form method="post" action="addfund">
+          {% csrf_token %}
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <center><button type="submit" class="btn btn-primary btn-lg"
+              style="padding-left: 2.5rem; padding-right: 2.5rem;">Add Fund</button></center><br>
+          </div>
+        </form>
+    </div>
+    <div class="col-sm">
+       <div class="text-center text-lg-start mt-4 pt-2">
+            <center><p  class=" btn-primary btn-lg"
+              style="padding-left: 2.5rem; padding-right: 2.5rem;">Allocated Funds</p></center><br>
+          </div>
+    </div>
+    <div class="col-sm" >
+            <form method="post" action="editfund">
+          {% csrf_token %}
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <center><button type="submit" class="btn btn-primary btn-lg"
+              style="padding-left: 2.5rem; padding-right: 2.5rem;">Edit Fund</button></center><br>
+          </div>
+        </form>
+    </div>
+
+</div>
+
 {% for fund in funds %}
 
 <form method="post" action="mine">
@@ -30,12 +58,6 @@
 <!--{% endfor %}-->
 
 {% endfor %}
- <form method="post" action="addfund">
-          {% csrf_token %}
-          <div class="text-center text-lg-start mt-4 pt-2">
-            <center><button type="submit" class="btn btn-primary btn-lg"
-              style="padding-left: 2.5rem; padding-right: 2.5rem;">Add Fund</button></center>
-          </div>
-        </form>
+
 
 {% endblock body%}

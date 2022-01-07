@@ -4,11 +4,10 @@
 {% block body %}
 <center><h1>Pending Transactions</h1></center>
 
-<form method="post" action="addblock">
-    {% csrf_token %}
-    <input type="checkbox" id="block" name="block" value="{{name}}" checked hidden  />
     {% for transaction in transactions %}
-<div class="card">
+<form method="post" action="deleteTransaction">
+    {% csrf_token %}
+    <div class="card">
   <div class="card-header">
     {{name}}
 
@@ -17,7 +16,9 @@
     <h5 class="card-title">From User -> {{transaction.fromAdd}}</h5>
     <h5 class="card-title">To User -> {{transaction.toAdd}}</h5>
     <h5 class="card-title">Amount -> {{transaction.amount}}</h5>
-    <a href="#" class="btn btn-primary">Delete Transaction</a>
+      <input class="card-title" type="checkbox" id="fund" name = "fund" value = "{{name}}" checked  >
+     <input class="card-title" type="checkbox" id="hash" name = "hash" value = "{{transaction.hash}}" checked  >
+    <button type="submit" class="btn btn-primary">Delete Transaction</button>
   </div>
 </div>
 
@@ -32,9 +33,11 @@
 <!--{{tran.amount}}-->
 <!--{% endfor %}-->
 
+</form>
 {% endfor %}
-
-
+<form method="post" action="addblock">
+    {% csrf_token %}
+    <input type="checkbox" id="block" name="block" value="{{name}}" checked hidden  />
 
           <div class="text-center text-lg-start mt-4 pt-2">
             <center><button type="submit" class="btn btn-primary btn-lg"

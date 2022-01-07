@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock title %}
+{% block body %}
+
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Available Funds</th>
+      <th scope="col">Update</th>
+      <th scope="col">Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for fund in funds %}
+    <tr>
+      <td>{{fund.name}}</td>
+      <td>{{fund.fund}}</td>
+      <td>
+          <form method="post" action="updatefund">
+            {% csrf_token %}
+            <input type="checkbox" id="fund1" name="fund" value="{{fund.name}}" checked  hidden />
+          <button type="button" data-bs-toggle="modal" data-bs-target="#{{fund.name}}" class="btn"><ion-icon name="pencil"></ion-icon> </button>
+        <div class="modal fade" id="{{fund.name}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addfundLabel">Update Fund</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <input type="number" id="amoumt" name="amount" value="{{fund.fund}}">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+          </form>
+
+
+      </td>
+      <td>
+        <form method="post" action="deletefund">
+          {% csrf_token %}
+          <input type="checkbox" id="fund" name="fund" value="{{fund.name}}" checked  hidden />
+          <button type="submit" class="btn"><ion-icon name="trash"></ion-icon> </button>
+        </form>
+      </td>
+    </tr>
+
+  {% endfor %}
+  </tbody>
+</table>
+
+
+{% endblock body%}

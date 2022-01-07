@@ -6,6 +6,7 @@ class Transaction:
         self.toAdd = toAdd
         self.amount = amount
         self.timestamp = datetime.now()
+        self.hash = self.calculateHash()
 
 
     def calculateHash(self):
