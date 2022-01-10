@@ -42,6 +42,7 @@ urlpatterns = [
     path('editfund', views.editfund, name="editfund"),
     path('deletefund', views.deletefund, name="deletefund"),
     path('updatefund', views.updatefund, name="updatefund"),
+    path('wallet', views.wallet, name="wallet"),
     # url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     # url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]

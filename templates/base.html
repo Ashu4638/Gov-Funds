@@ -36,8 +36,15 @@
           <li>
               <a class="nav-link" href="/admin/">Manage Users</a>
           </li>
-        {% else %}
+        {% elif user.is_authenticated and not user.is_staff %}
          <li class="nav-item">
+          <a class="nav-link" href="/loginform">Create Transaction</a>
+        </li>
+        <li>
+          <a class="nav-link" href="/wallet">My Wallet</a>
+        </li>
+        {% else %}
+          <li class="nav-item">
           <a class="nav-link" href="/loginform">Create Transaction</a>
         </li>
         {% endif %}

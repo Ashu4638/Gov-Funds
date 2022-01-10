@@ -26,7 +26,7 @@ class Blockchain:
         print("Block Mined !")
         self.chain.append(block)
         self.pendingtransactions = []
-        self.validity = self.isChainValid()
+
 
     def createTransaction(self, transaction):
         self.pendingtransactions.append(transaction)

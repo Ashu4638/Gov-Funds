@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock title %}
+{% block body %}
+
+
+{% for wallet in wallets %}
+<br><br>
+<div class="container-fluid ">
+    <center>
+        <div class="row-fluid">
+        <div class="span8">
+            <h3>Name: {{user.first_name}} {{user.last_name}}</h3>
+            <h4>Email: {{user}}</h4>
+            <h4>Balance: {{wallet.balance}}</h4>
+        </div>
+    </center>
+
+<br><br>
+
+</div>
+</div>
+{% endfor %}
+<center><h2>Transaction History</h2></center>
+<br><br>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Fund</th>
+      <th scope="col">Amount</th>
+      <th scope="col">Time</th>
+      <th scope="col">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for transactions in Transactions %}
+    <tr>
+      <th scope="row">{{transactions.ID}}</th>
+      <td>{{transactions.fromAdd}}</td>
+      <td>{{transactions.amount}}</td>
+      <td>{{transactions.timestamp}}</td>
+      <td>{{transactions.status}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+
+
+
+{% endblock body%}

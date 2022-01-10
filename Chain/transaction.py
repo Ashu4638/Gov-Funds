@@ -7,6 +7,7 @@ class Transaction:
         self.amount = amount
         self.timestamp = datetime.now()
         self.hash = self.calculateHash()
+        self.status = "Requested"
 
 
     def calculateHash(self):

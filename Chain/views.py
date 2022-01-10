@@ -7,14 +7,19 @@ from django.contrib.auth import authenticate, login, logout
 from . import blockchain
 from . import transaction
 from .Block import Block
-
+from .models import Wallets
+from .models import History
+from datetime import datetime
+import pickle
 fund = blockchain.Blockchain(10000, "Scholarship")
 # fund.createTransaction(transaction.Transaction("Address1", "Address2", 100))
 # fund.createTransaction(transaction.Transaction("Address2", "Address1", 50))
 # fund.minependingTransacrions()
 # fund.createTransaction(transaction.Transaction("Address1", "Address2", 100))
 # fund.createTransaction(transaction.Transaction("Address2", "Address1", 50))
-data = {"funds" : [fund]}
+data = {"funds":[]}
+with open("blockchain.pkl", "rb") as file:
+    data = pickle.load(file)
 
 
 
@@ -47,11 +52,15 @@ def createTransaction(request):
             print(fromAdd)
             print(toAdd)
             # fund = data["funds"][0]
+
             for ptr in range (0,len(data["funds"])):
                 if data["funds"][ptr].name == fromAdd:
                     data["funds"][ptr].createTransaction(transaction.Transaction(fromAdd, toAdd, amount))
+                    History(fromAdd=fromAdd, toAdd=toAdd, amount=amount, timestamp=datetime.now(), status="Requested").save()
                     print("Transaction Added")
                     print(data["funds"][ptr].name)
+                    with open("blockchain.pkl", "wb") as file:
+                        pickle.dump(data, file, protocol=pickle.HIGHEST_PROTOCOL)
                     break
             return render(request,'transaction.html', data)
         else:
@@ -92,7 +101,19 @@ def addblock(request):
             fund = data["funds"][0]
             for ptr in range (0,len(data["funds"])):
                 if data["funds"][ptr].name == name:
+                    for trans in data["funds"][ptr].pendingtransactions:
+                        user_wallets = Wallets.objects.filter(username= trans.toAdd)
+                        for wallet in user_wallets:
+                            wallet.balance += trans.amount
+                            print(wallet.balance)
+                            print(trans.amount)
+                            Wallets.objects.filter(username=trans.toAdd).update(balance = wallet.balance)
+                        History.objects.filter(timestamp= trans.timestamp, toAdd=trans.toAdd).update(status="Approved")
+
+
                     data["funds"][ptr].minependingTransacrions()
+                    with open("blockchain.pkl", "wb") as file:
+                        pickle.dump(data, file, protocol=pickle.HIGHEST_PROTOCOL)
                     return render(request, 'blockchain.html', {"funds": data["funds"][ptr].chain, "name": data["funds"][ptr].name})
         return HttpResponse("failed")
     else:
@@ -120,7 +141,13 @@ def viewtransaction(request):
                         return render(request, 'viewtransaction.html', {"transactions": data["funds"][ptr].chain[i].transactions})
                         break
     return HttpResponse("Failed")
-
+def wallet(request):
+    if request.user.is_authenticated and not request.user.is_staff:
+        my_wallets = Wallets.objects.filter(username = request.user)
+        my_trans = History.objects.filter(toAdd=request.user).order_by('-timestamp')
+        return render(request, "wallet.html",{"wallets" : my_wallets, "Transactions":my_trans})
+    else:
+        return render(request, "login.html")
 def addfund(request):
     if request.user.is_authenticated and request.user.is_staff:
         return render(request, 'addFund.html')
@@ -135,6 +162,10 @@ def appendfund(request):
             if " " in fundname:
                 messages.error(request, "Space is Not Allwed in Fund Name !")
                 return render(request, 'addFund.html')
+            for fund in data["funds"]:
+                if fund.name == fundname:
+                    messages.error(request, "Fund Alredy Exists !")
+                    return render(request, 'addFund.html')
             amount = request.POST['amount']
             print(amount)
             print(fundname)
@@ -142,6 +173,8 @@ def appendfund(request):
             # print(temp.chain)
 
             data["funds"].append(blockchain.Blockchain(int(amount), fundname))
+            with open("blockchain.pkl", "wb") as file:
+                pickle.dump(data, file, protocol=pickle.HIGHEST_PROTOCOL)
             messages.success(request, "Fund Added Successfully !")
 
         return render(request, 'addFund.html')
@@ -161,7 +194,11 @@ def deleteTransaction(request):
                 if data["funds"][ptr].name == name:
                     for i in range (0, len(data["funds"][ptr].pendingtransactions)):
                         if data["funds"][ptr].pendingtransactions[i].hash == hash:
+                            History.objects.filter(timestamp=data["funds"][ptr].pendingtransactions[i].timestamp, toAdd=data["funds"][ptr].pendingtransactions[i].toAdd).update(
+                                status="Rejected")
                             data["funds"][ptr].pendingtransactions.pop(i)
+                            with open("blockchain.pkl", "wb") as file:
+                                pickle.dump(data, file, protocol=pickle.HIGHEST_PROTOCOL)
                             return render(request, 'Mine.html', {"transactions":data["funds"][ptr].pendingtransactions, "name" : name})
 
             return HttpResponse("404 Error Not Found")
@@ -206,6 +243,8 @@ def deletefund(request):
         for ptr in range(len(data["funds"])):
             if data["funds"][ptr].name == name:
                 data["funds"].pop(ptr)
+                with open("blockchain.pkl", "wb") as file:
+                    pickle.dump(data, file, protocol=pickle.HIGHEST_PROTOCOL)
                 return render(request, "editfund.html", data)
     else:
         return render(request, "login.html")
@@ -217,6 +256,8 @@ def updatefund(request):
         for ptr in range(len(data["funds"])):
             if data["funds"][ptr].name == name:
                 data["funds"][ptr].fund = amount
+                with open("blockchain.pkl", "wb") as file:
+                    pickle.dump(data, file, protocol=pickle.HIGHEST_PROTOCOL)
                 return render(request, "editfund.html", data)
         return HttpResponse("Failed")
     else:
@@ -241,10 +282,16 @@ def singup(request):
         if password != rpass:
             messages.error(request,"Password doesn't match")
             return render(request, "register.html")
+        print(User.objects.all())
+        for name in User.objects.all():
+            if name.username == username:
+                messages.error(request, "Email Already Exists !")
+                return render(request, "register.html")
         myuser  = User.objects.create_user(username=username, password=password, email=username)
         myuser.first_name = fname
         myuser.last_name = lname
         myuser.save()
+        Wallets(username=username, balance=0).save()
         messages.success(request, "Account Created")
         return redirect("/")
     else:
