@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-^qmuvt52(r6afvpwyu)^gs+8igv!71e6g)!v9t*v3+q+ka_nd+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '  govt-fund-allocation-tracking.herokuapp.com/']
+ALLOWED_HOSTS = ['127.0.0.1', '  govt-fund-allocation-tracking.herokuapp.com']
 
 
 # Application definition
