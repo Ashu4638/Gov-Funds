@@ -18,13 +18,14 @@ fund = blockchain.Blockchain(10000, "Scholarship")
 # fund.createTransaction(transaction.Transaction("Address1", "Address2", 100))
 # fund.createTransaction(transaction.Transaction("Address2", "Address1", 50))
 data = {"funds":[]}
-with open("blockchain.pkl", "rb") as file:
-    data = pickle.load(file)
+def load_data():
+    with open("blockchain.pkl", "rb") as file:
+        data = pickle.load(file)
 
-
+load_data()
 
 def index(request):
-
+    load_data()
     return render(request, 'index.html', data)
 
 def admin(request):
@@ -35,7 +36,7 @@ def admin(request):
 
 
 def loginform(request):
-
+    load_data()
     if request.user.is_authenticated and not request.user.is_staff:
         return render(request, 'transaction.html', data)
     elif request.user.is_authenticated and request.user.is_staff:
@@ -44,6 +45,7 @@ def loginform(request):
         return render(request, 'login.html')
 
 def createTransaction(request):
+    load_data()
     if request.user.is_authenticated and not request.user.is_staff:
         if request.method == 'POST':
             fromAdd = request.POST.get('fundname')
@@ -70,6 +72,7 @@ def createTransaction(request):
 
 
 def Mine(request):
+    load_data()
     if request.user.is_authenticated and request.user.is_staff:
         chain = data["funds"][0]
         name = ""
@@ -93,6 +96,7 @@ def Mine(request):
         return render(request, 'login.html')
 
 def addblock(request):
+    load_data()
     if request.user.is_authenticated and request.user.is_staff:
         if request.method == 'POST':
             name = request.POST.get('block')
@@ -119,6 +123,7 @@ def addblock(request):
     else:
         return render(request, 'login.html')
 def viewblockchain(request):
+    load_data()
     if request.method == 'POST':
         name = request.POST.get('block')
         print(name)
@@ -127,6 +132,7 @@ def viewblockchain(request):
                 return render(request, 'blockchain.html', {"funds": data["funds"][ptr].chain, "name" : data["funds"][ptr].name})
     return HttpResponse("Failed")
 def viewtransaction(request):
+    load_data()
     if request.method == 'POST':
         name = request.POST.get('fund')
         hash = request.POST.get('hash')
@@ -142,6 +148,7 @@ def viewtransaction(request):
                         break
     return HttpResponse("Failed")
 def wallet(request):
+    load_data()
     if request.user.is_authenticated and not request.user.is_staff:
         my_wallets = Wallets.objects.filter(username = request.user)
         my_trans = History.objects.filter(toAdd=request.user).order_by('-timestamp')
@@ -149,12 +156,14 @@ def wallet(request):
     else:
         return render(request, "login.html")
 def addfund(request):
+    load_data()
     if request.user.is_authenticated and request.user.is_staff:
         return render(request, 'addFund.html')
     else:
         return render(request, 'login.html')
 
 def appendfund(request):
+    load_data()
     if request.user.is_authenticated and request.user.is_staff:
 
         if request.method == 'POST':
@@ -183,6 +192,7 @@ def appendfund(request):
 
 
 def deleteTransaction(request):
+    load_data()
     if request.user.is_authenticated and request.user.is_staff:
         if request.method == 'POST':
             name = request.POST['fund']
@@ -212,6 +222,7 @@ def about(request):
 
 
 def handlelogin(request):
+    load_data()
     if request.method == 'POST':
 
         username = request.POST['email']
@@ -232,11 +243,13 @@ def handlelogin(request):
         return HttpResponse("404 - Not Allowed")
 
 def editfund(request):
+    load_data()
     if request.user.is_authenticated and request.user.is_staff:
         return render(request, "editfund.html", data)
     else:
         return render(request, "login.html")
 def deletefund(request):
+    load_data()
     if request.user.is_authenticated and request.user.is_staff:
         name  = request.POST['fund']
         print(name)
@@ -250,6 +263,7 @@ def deletefund(request):
         return render(request, "login.html")
 
 def updatefund(request):
+    load_data()
     if request.user.is_authenticated and request.user.is_staff:
         name = request.POST['fund']
         amount = int(request.POST['amount'])
@@ -264,6 +278,7 @@ def updatefund(request):
         return render(request, "login.html")
 
 def handlelogout(request):
+    load_data()
     if request.method == 'POST':
         logout(request)
         return render(request, 'index.html',data)
